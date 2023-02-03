@@ -1,34 +1,80 @@
 import '../assets/styles/style.scss';
 
-//Patron del juego
+// Arreglo que alamacene los colors
+let colors = ['red', 'blue', 'green', 'yellow'];
+
+// Patron del juego
 let gameP = [];
 
-//Patron del click
-let gameClickP = [];
+// Patron de clicks 
+let gameClicksP = [];
 
-//Funcion para iniciar el juego
+// Funcion para iniciar el juego
 let start = false;
 let level = 0;
 
-//Evento para que registre una tecla e inicie el juego
+// Evento para que registre una tecla e inice el juego
 $(document).keydown(() => {
-  if(!start) {
-    $('#level-title').text('level' + level);
+  if (!start) {
+    $('#level-title').text('Level ' + level);
     start = true;
+    nextSequence();
   }
+
 });
 
-//Funcion para crear la secuencia del juego 
+// Evento al que el usuario le esta dando click
+$('.container__row__btn').click(function () {
+  let userColor = $(this).attr('id');
+
+  gameClicksP.push(userColor);
+
+  playSound(userColor);
+
+  animateClick(userColor);
+
+  checkAnswer(gameClicksP.length - 1);
+});
+
+
+// Funcion para crear la secuencia del juego
 function nextSequence() {
-  //Reiniciar los clicks
-  gameClickP = [];
+  // Reiniciar los clicks
+  gameClicksP = [];
 
-  //Actualizar el nivel 
+  // Actualizar el nivel
   level++;
-  $('#level-title').text('level' + level);
+  $('#level-title').text('Level ' + level);
 
-  //Números aleatorios para el patron
-  let randomNumber = Math.random()*4;
+  // Numeros aleatorios para el patron
+  let randomNumber = Math.random() * 4;
   randomNumber = Math.floor(randomNumber);
 
+  // Usar numero aleatorio para llamar el btn seleccionado
+  let randomColor;
+  randomColor = colors[randomNumber];
+
+  // Alamacenar el numero en el patron
+  gameP.push(randomColor);
+
+  $('#' + randomColor).fadeIn(100).fadeOut(100).fadeIn(100);
+
+  playSound(randomColor);
+}
+
+//Funcion para emitir sonidos
+function playSound(color) {
+  let audio = new Audio('../assets/sounds/' + color + '.mp3');
+
+  audio.play();
+}
+
+//Funcion para animar el click
+function animateClick(userColor) {
+  $('#' + userColor).addClass('pressed');
+
+  // Quitar la clases agregada
+  setTimeout(() => {
+    $('#' + userColor).removeClass('pressed');
+  }, 100);
 }
