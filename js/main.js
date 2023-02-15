@@ -62,14 +62,42 @@ function nextSequence() {
   playSound(randomColor);
 }
 
-//Funcion para emitir sonidos
+// Funcion para confirmar los clicks del usuario
+function checkAnswer(currentLevel) {
+  if (gameP[currentLevel] === gameClicksP[currentLevel]) {
+    if (gameP.length === gameClicksP.length) {
+      setTimeout(() => {
+        nextSequence();
+      }, 1000);
+    }
+  } else {
+    // Mostrar sonido de error
+    playSound('wrong');
+
+    // Clases para finalizar el juego
+    $('body').addClass('game-over');
+
+    // Cambiar titulo para poder reiniciarlo
+    $('#level-title').text('Game Over!');
+
+    // Quitar la clases agregada
+    setTimeout(() => {
+      $('body').removeClass('game-over');
+    }, 400);
+
+    // Llamar funcion para reiniciar el juego
+    startOver();
+  }
+}
+
+// Funcion para emular sonidos
 function playSound(color) {
   let audio = new Audio('../assets/sounds/' + color + '.mp3');
 
   audio.play();
 }
 
-//Funcion para animar el click
+// Funcion para animar el click
 function animateClick(userColor) {
   $('#' + userColor).addClass('pressed');
 
@@ -77,4 +105,11 @@ function animateClick(userColor) {
   setTimeout(() => {
     $('#' + userColor).removeClass('pressed');
   }, 100);
+}
+
+// Funcion para reiniciar el juego
+function startOver() {
+  level = 0;
+  gameP = [];
+  start = false;
 }
